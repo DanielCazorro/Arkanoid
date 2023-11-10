@@ -4,7 +4,7 @@ Este es un clon del clásico juego de ladrillos desarrollado con Pygame.
 
 ## ScreenShots
 
-![Screenshot 1](https://github.com/DanielCazorro/Arkanoid_/Pictures/Screen1.png) ![Screenshot 2](https://github.com/DanielCazorro/Arkanoid_/Pictures/Screen2.png)
+![Screenshot 1](https://github.com/DanielCazorro/Arkanoid_/blob/main/Pictures/Screenshot1.png) ![Screenshot 2](https://github.com/DanielCazorro/Arkanoid_/blob/main/Pictures/Screenshot2.png)
 
 ## Requisitos
 
