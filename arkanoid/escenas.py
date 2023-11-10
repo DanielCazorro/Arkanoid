@@ -3,7 +3,7 @@ import pygame as pg
 from . import ALTO, ANCHO, FPS
 from .entidades import Ladrillo, Pelota, Raqueta
 
-
+# Clase Escena
 class Escena:
     def __init__(self, pantalla):
         self.pantalla = pantalla
@@ -16,14 +16,12 @@ class Escena:
         """
         pass
 
-
+# Clase Portada
 class Portada(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla)
-
         ruta = os.path.join("resources", "images", "arkanoid_name.png")
         self.logo = pg.image.load(ruta)
-
         ruta_tipo = os.path.join("resources", "fonts", "CabinSketch-Bold.ttf")
         self.tipografia = pg.font.Font(ruta_tipo, 28)
 
@@ -54,23 +52,22 @@ class Portada(Escena):
 
     def pintar_texto(self):
         mensaje = "Pulsa <espacio> para comenzar la partida"
-        # texto = pg.font.Font.render(self.tipografia, mensaje, True, (255, 255, 255))
         texto = self.tipografia.render(mensaje, True, (255, 255, 255))
         pos_x = ANCHO/2 - texto.get_width()/2
         pos_y = ALTO * 3 / 4
         self.pantalla.blit(texto, (pos_x, pos_y))
 
-
 class Partida(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla)
-        # crear la ruta donde está la imagen
         ruta = os.path.join("resources", "images", "background.jpg")
-        # cargar la imagen en un atributo
         self.fondo = pg.image.load(ruta)
         self.jugador = Raqueta()
         self.pelota = Pelota(self.jugador.rect.midtop)
+        # Guardar la posición inicial
+        self.pelota.posicion_inicial = self.jugador.rect.midtop
         self.crear_muro()
+        self.puntuacion = 0
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -79,10 +76,14 @@ class Partida(Escena):
         while not salir:
             self.reloj.tick(FPS)
             for event in pg.event.get():
+
+
                 if event.type == pg.QUIT:
                     return True
                 if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
-                    partida_iniciada = True
+                    partida_iniciada = not partida_iniciada  # Invertir el estado del juego
+                    if partida_iniciada:
+                        self.pelota.en_movimiento = True  # Permitir que la pelota se mueva nuevamente
 
             self.pintar_fondo()
             self.jugador.update()
@@ -99,23 +100,28 @@ class Partida(Escena):
             )
             if len(golpeados) > 0:
                 self.pelota.velocidad_y = -self.pelota.velocidad_y
-            # sumar la puntuación de todos los ladrillos golpeados
+                # Incrementar la puntuación por cada bloque roto
+                self.puntuacion += len(golpeados)
 
             self.ladrillos.draw(self.pantalla)
+            self.mostrar_puntuacion()
 
             pg.display.flip()
         return False
+    
+    def mostrar_puntuacion(self):
+        font = pg.font.Font(None, 36)
+        texto = font.render(f"Puntuación: {self.puntuacion}", True, (255, 255, 255))
+        self.pantalla.blit(texto, (10, ALTO - 40))
 
     def pintar_fondo(self):
         self.pantalla.fill((0, 0, 99))
-        # pintar la imagen de fondo en la pantalla
         self.pantalla.blit(self.fondo, (0, 0))
 
     def crear_muro(self):
         filas = 5
         columnas = 6
         margen_superior = 40
-
         self.ladrillos = pg.sprite.Group()
 
         for fila in range(filas):
@@ -128,7 +134,7 @@ class Partida(Escena):
                 self.ladrillos.add(ladrillo)
                 print(ladrillo.rect)
 
-
+# Clase MejoresJugadores
 class MejoresJugadores(Escena):
     def bucle_principal(self):
         super().bucle_principal()

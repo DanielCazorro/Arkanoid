@@ -3,36 +3,25 @@ import pygame as pg
 from . import ALTO, ANCHO
 from .escenas import Portada, Partida, MejoresJugadores
 
-
+# Clase Arkanoid
 class Arkanoid:
     def __init__(self):
         pg.init()
         self.pantalla = pg.display.set_mode((ANCHO, ALTO))
         pg.display.set_caption("Arkanoid BZ Version")
 
-        # Windows: resources\images\icon.png
-        # Mac/Linux: resources/images/icon.png
-        ruta = os.path.join("resources", "images", "icon.png")
-        icono = pg.image.load(ruta)
+        # Cargar icono
+        ruta_icono = os.path.join("resources", "images", "icon.png")
+        icono = pg.image.load(ruta_icono)
         pg.display.set_icon(icono)
 
+        # Crear instancias de las escenas
         objeto_portada = Portada(self.pantalla)
         objeto_partida = Partida(self.pantalla)
         objeto_mejores = MejoresJugadores(self.pantalla)
 
-        self.escenas = [
-            objeto_portada,
-            objeto_partida,
-            objeto_mejores
-        ]
-
-        # Escrito de forma simplificada:
-        #
-        # self.escenas = [
-        #     Portada(self.pantalla)
-        #     Partida(self.pantalla)
-        #     MejoresJugadores(self.pantalla)
-        # ]
+        # Lista de escenas
+        self.escenas = [objeto_portada, objeto_partida, objeto_mejores]
 
     def jugar(self):
         """Este es el bucle principal"""
@@ -41,5 +30,9 @@ class Arkanoid:
             if he_acabado:
                 # return
                 break
-        print("He acabado el for")
         pg.quit()
+
+# Ejecutar el juego si este archivo es el punto de entrada
+if __name__ == "__main__":
+    arkanoid = Arkanoid()
+    arkanoid.jugar()
